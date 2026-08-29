@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Library of Babel — Image &amp; Text Index</title>
+<style>
+  :root{
+    --ink:#232016;
+    --paper:#efe8d8;
+    --paper-dim:#e2d9c3;
+    --line:#c9bc9c;
+    --accent:#7a3b2e;
+    --accent-ink:#f3ece0;
+    --mono: 'Courier New', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --serif: Georgia, 'Times New Roman', serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse at top, rgba(0,0,0,0.04), transparent 60%),
+      var(--paper);
+    color:var(--ink);
+    font-family:var(--serif);
+    line-height:1.45;
+    padding:24px 16px 60px;
+  }
+  .wrap{max-width:720px;margin:0 auto;}
+  header{margin-bottom:28px;}
+  .kicker{
+    font-family:var(--mono);
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    font-size:11px;
+    color:var(--accent);
+    margin:0 0 6px;
+  }
+  h1{
+    font-size:28px;
+    margin:0 0 8px;
+    font-weight:400;
+    letter-spacing:.01em;
+  }
+  .sub{
+    font-size:14px;
+    color:#5a5340;
+    max-width:56ch;
+  }
+  .tabs{
+    display:flex;
+    gap:2px;
+    margin:22px 0 0;
+    border-bottom:1px solid var(--line);
+  }
+  .tab{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    padding:10px 16px;
+    background:none;
+    border:1px solid var(--line);
+    border-bottom:none;
+    border-radius:4px 4px 0 0;
+    color:#6b6248;
+    cursor:pointer;
+  }
+  .tab.active{
+    background:var(--paper);
+    color:var(--ink);
+    font-weight:bold;
+    position:relative;
+    top:1px;
+  }
+  section.panel{
+    display:none;
+    border:1px solid var(--line);
+    border-top:none;
+    padding:22px;
+    background:rgba(255,255,255,0.25);
+  }
+  section.panel.active{display:block;}
+  .block{margin-bottom:26px;}
+  .block:last-child{margin-bottom:0;}
+  .block h2{
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    font-family:var(--mono);
+    color:var(--accent);
+    margin:0 0 12px;
+    border-bottom:1px dotted var(--line);
+    padding-bottom:6px;
+  }
+  label{
+    display:block;
+    font-family:var(--mono);
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    color:#6b6248;
+    margin:12px 0 4px;
+  }
+  label:first-child{margin-top:0;}
+  input[type=text], input[type=number], textarea, select{
+    width:100%;
+    font-family:var(--mono);
+    font-size:13px;
+    padding:9px 10px;
+    border:1px solid var(--line);
+    border-radius:3px;
+    background:#fbf8f0;
+    color:var(--ink);
+  }
+  textarea{resize:vertical;min-height:80px;}
+  .row{display:flex;gap:10px;flex-wrap:wrap;}
+  .row > div{flex:1;min-width:120px;}
+  button{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    padding:10px 16px;
+    border:1px solid var(--ink);
+    border-radius:3px;
+    background:var(--ink);
+    color:var(--accent-ink);
+    cursor:pointer;
+    margin-top:14px;
+    margin-right:8px;
+  }
+  button.ghost{
+    background:none;
+    color:var(--ink);
+  }
+  button:active{transform:translateY(1px);}
+  .hint{font-size:11px;color:#847a5e;margin-top:6px;font-family:var(--mono);}
+  .pointer-out{
+    margin-top:14px;
+    padding:12px;
+    background:#fbf8f0;
+    border:1px solid var(--line);
+    border-radius:3px;
+    word-break:break-all;
+    font-family:var(--mono);
+    font-size:12px;
+  }
+  .pointer-out .lbl{
+    display:block;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--accent);
+    margin-bottom:4px;
+  }
+  canvas{
+    image-rendering:pixelated;
+    border:1px solid var(--line);
+    background:#000;
+    margin-top:12px;
+    max-width:100%;
+  }
+  .result-text{
+    margin-top:12px;
+    padding:12px;
+    background:#fbf8f0;
+    border:1px solid var(--line);
+    border-radius:3px;
+    font-family:var(--mono);
+    font-size:13px;
+    white-space:pre-wrap;
+    word-break:break-word;
+  }
+  .note{
+    font-size:12px;
+    color:#5a5340;
+    background:var(--paper-dim);
+    border-left:3px solid var(--accent);
+    padding:10px 14px;
+    margin-top:26px;
+  }
+  .msg{font-size:12px;font-family:var(--mono);margin-top:8px;}
+  .msg.err{color:#9a2b1f;}
+  .msg.ok{color:#3d6b3a;}
+  details.collap{
+    margin-top:14px;
+    border:1px solid var(--line);
+    border-radius:3px;
+    background:#fbf8f0;
+  }
+  details.collap > summary{
+    cursor:pointer;
+    font-family:var(--mono);
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--accent);
+    padding:10px 12px;
+    user-select:none;
+    list-style:none;
+  }
+  details.collap > summary::before{content:'▸ ';}
+  details.collap[open] > summary::before{content:'▾ ';}
+  details.collap .collap-body{padding:0 12px 12px;}
+  details.collap .pointer-out{margin-top:10px;}
+  #fs-overlay{
+    position:fixed; inset:0; z-index:1000;
+    background:#0d0b07;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    gap:0;
+  }
+  #fs-overlay[hidden]{display:none;}
+  #fs-canvas{
+    image-rendering:pixelated;
+    border:none;
+    margin:0;
+    max-width:100vw;
+    max-height:calc(100vh - 64px);
+    object-fit:contain;
+    flex:1;
+    min-height:0;
+  }
+  #fs-bar{
+    height:64px;
+    display:flex; align-items:center; gap:10px;
+    padding:0 16px;
+    flex-shrink:0;
+  }
+  #fs-bar button{margin-top:0;margin-right:0;}
+  #fs-bar button.ghost{color:var(--accent-ink);border-color:var(--accent-ink);}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="kicker">All possible pages, at a fixed size</p>
+    <h1>Library of Babel — Image &amp; Text Index</h1>
+    <p class="sub">Nothing is stored anywhere. A pointer is just an address into a fixed space of possible pages — feed it back in and the exact same page reappears. Everything runs client-side in this one file.</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="image">Image shelf</button>
+    <button class="tab" data-tab="text">Text / number / symbol shelf</button>
+  </div>
+
+  <!-- IMAGE PANEL -->
+  <section class="panel active" id="panel-image">
+    <div class="block">
+      <h2>1. Find your image's address</h2>
+      <label>Upload an image</label>
+      <input type="file" id="img-file" accept="image/*">
+      <p class="hint" id="img-autores">Resolution is detected automatically from the file you choose — override it below if you want a smaller page.</p>
+      <div class="row">
+        <div>
+          <label>Width (px)</label>
+          <input type="number" id="img-w" value="32" min="1" max="4096">
+        </div>
+        <div>
+          <label>Height (px)</label>
+          <input type="number" id="img-h" value="32" min="1" max="4096">
+        </div>
+        <div>
+          <label>Color depth (bits/channel)</label>
+          <select id="img-depth">
+            <option value="1">1 bit (2 lvl)</option>
+            <option value="2">2 bit (4 lvl)</option>
+            <option value="3">3 bit (8 lvl)</option>
+            <option value="4" selected>4 bit (16 lvl)</option>
+            <option value="6">6 bit (64 lvl)</option>
+            <option value="8">8 bit (256 lvl)</option>
+          </select>
+        </div>
+      </div>
+      <label>Maximum link length</label>
+      <select id="img-linklimit">
+        <option value="900">900 characters — safest for chat apps &amp; SMS</option>
+        <option value="1800" selected>1800 characters — WhatsApp / Telegram safe</option>
+        <option value="4000">4000 characters — email, most browsers</option>
+        <option value="0">No limit — full quality, link may be unsendable</option>
+      </select>
+      <p class="hint">If the address would be longer than this, the page is automatically located at a smaller resolution (and, if needed, a lower colour depth) until the link fits. With <strong>No limit</strong> nothing is reduced: your image keeps its native resolution and full 8-bit colour.</p>
+      <p class="hint" id="img-est"></p>
+      <button id="img-encode-btn">Locate in the library</button>
+      <div id="img-encode-out"></div>
+    </div>
+
+    <div class="block">
+      <h2>2. Visit an address</h2>
+      <label>Pointer</label>
+      <input type="text" id="img-pointer-in" placeholder="paste a pointer string — resolution and colour depth are read from it automatically">
+      <p class="hint" id="img-pointer-info"></p>
+      <button id="img-decode-btn">Retrieve page</button>
+      <button class="ghost" id="img-prev-btn">« Prev address</button>
+      <button class="ghost" id="img-next-btn">Next address »</button>
+      <button class="ghost" id="img-random-btn">Random address</button>
+      <button class="ghost" id="img-copy-btn">Copy link</button>
+      <div id="img-decode-out"></div>
+    </div>
+  </section>
+
+  <!-- TEXT PANEL -->
+  <section class="panel" id="panel-text">
+    <div class="block">
+      <h2>1. Find your text's address</h2>
+      <label>Text (A–Z, a–z, 0–9, space, period only — everything else is dropped)</label>
+      <textarea id="txt-input" placeholder="Type or paste text, a number, a short message..."></textarea>
+      <label>Page length (characters)</label>
+      <select id="txt-len">
+        <option value="140">140</option>
+        <option value="280" selected>280</option>
+        <option value="500">500</option>
+        <option value="1000">1000</option>
+        <option value="3200">3200 (classic Babel page)</option>
+      </select>
+      <p class="hint" id="txt-est"></p>
+      <button id="txt-encode-btn">Locate in the library</button>
+      <div id="txt-encode-out"></div>
+    </div>
+
+    <div class="block">
+      <h2>2. Visit an address</h2>
+      <label>Pointer</label>
+      <input type="text" id="txt-pointer-in" placeholder="paste a pointer string — page length is read from it automatically">
+      <p class="hint" id="txt-pointer-info"></p>
+      <button id="txt-decode-btn">Retrieve page</button>
+      <button class="ghost" id="txt-prev-btn">« Prev address</button>
+      <button class="ghost" id="txt-next-btn">Next address »</button>
+      <button class="ghost" id="txt-random-btn">Random address</button>
+      <button class="ghost" id="txt-copy-btn">Copy link</button>
+      <div id="txt-decode-out"></div>
+    </div>
+  </section>
+
+  <p class="note" id="how-note">
+    How it works: a page is a fixed-size grid of quantized pixels (or a fixed-length string over a 64-symbol alphabet).
+    Every possible pixel/character combination at that size already "exists" as a numbered page — uploading an image
+    or typing text just computes which page number is an exact match, it doesn't invent anything new. The page number is
+    then written down as compactly as possible: it is prediction-filtered and DEFLATE-compressed (all completely lossless —
+    the page that comes back is bit-for-bit the page you located, at the resolution and colour depth you chose), then
+    written in a 32768-symbol alphabet of whole Unicode characters at 15 bits per character instead of base64's 6. The tool tries nine different ways of writing each image address (raw, three predictor filters,
+    channel-planar reordering, and an indexed-colour palette, each DEFLATE-compressed) and four ways for text, then keeps the shortest. Full 1440×2560 pages are supported, and a real
+    photograph's address typically comes out several times shorter than its raw form without a single pixel changing.
+    Shareable links carry the same bytes as base64url in the URL fragment (which browsers never send to any server), since non-ASCII characters would otherwise be percent-escaped to nine bytes each. The pointer also carries a tiny header recording its own resolution, colour depth, or length, so pasting a pointer alone
+    is enough to reproduce the exact page — nothing else to set by hand, and nothing saved on any server. Almost all
+    addresses, if you jump to one at random, are static — meaningful pages are a vanishing fraction of the space, same as
+    the real Library of Babel.
+  </p>
+</div>
+
+<div id="fs-overlay" hidden>
+  <canvas id="fs-canvas"></canvas>
+  <div id="fs-bar">
+    <button id="fs-prev">« Prev</button>
+    <button id="fs-rand">Random</button>
+    <button id="fs-next">Next »</button>
+    <button class="ghost" id="fs-exit">Exit ✕</button>
+  </div>
+</div>
+
+<script>
+// ---------- generic bit packing ----------
+function packBits(values, bitsPerValue){
+  const totalBits = values.length * bitsPerValue;
+  const bytes = new Uint8Array(Math.ceil(totalBits/8));
+  let bitPos = 0;
+  for(let i=0;i<values.length;i++){
+    const v = values[i];
+    for(let b=bitsPerValue-1;b>=0;b--){
+      if((v >> b) & 1) bytes[bitPos>>3] |= (1 << (7-(bitPos & 7)));
+      bitPos++;
+    }
+  }
+  return bytes;
+}
+function unpackBits(bytes, bitsPerValue, count){
+  const values = new Uint8Array(count);
+  let bitPos = 0;
+  for(let i=0;i<count;i++){
+    let v = 0;
+    for(let b=0;b<bitsPerValue;b++){
+      const byteIndex = bitPos>>3;
+      const bit = byteIndex < bytes.length ? (bytes[byteIndex] >> (7-(bitPos & 7))) & 1 : 0;
+      v = (v<<1) | bit;
+      bitPos++;
+    }
+    values[i] = v;
+  }
+  return values;
+}
+function concatBytes(a,b){
+  const out = new Uint8Array(a.length+b.length);
+  out.set(a,0); out.set(b,a.length);
+  return out;
+}
+
+// ---------- lossless compression (DEFLATE, raw) ----------
+// Nothing here touches the page's contents: the pixels/characters that come back
+// out are bit-for-bit the ones that went in. Compression only shortens how the
+// address is written down, never what it points at.
+const HAS_CS = (typeof CompressionStream === 'function' && typeof DecompressionStream === 'function');
+async function deflateRaw(bytes){
+  if(!HAS_CS) return null;
+  try{
+    const cs = new CompressionStream('deflate-raw');
+    const stream = new Blob([bytes]).stream().pipeThrough(cs);
+    return new Uint8Array(await new Response(stream).arrayBuffer());
+  }catch(e){ return null; }
+}
+async function inflateOnce(bytes){
+  if(!HAS_CS) return null;
+  try{
+    const ds = new DecompressionStream('deflate-raw');
+    const stream = new Blob([bytes]).stream().pipeThrough(ds);
+    return new Uint8Array(await new Response(stream).arrayBuffer());
+  }catch(e){ return null; }
+}
+// the pointer alphabet packs 15 bits per character, so the last character can carry
+// up to two bytes of zero padding past the end of the real data — trim it back off.
+async function inflateRaw(bytes){
+  for(let trim=0; trim<=2 && bytes.length-trim>0; trim++){
+    const r = await inflateOnce(trim ? bytes.subarray(0, bytes.length-trim) : bytes);
+    if(r) return r;
+  }
+  return null;
+}
+
+// ---------- pointer alphabet: 15 bits per character ----------
+// 32768 contiguous BMP code points starting at CJK Unified Ideographs, ending well
+// below the surrogate range, so every pointer round-trips as a plain JS string.
+// 15 bits/char vs base64's 6 bits/char = 2.5× fewer characters for the same data.
+const WIDE_BITS = 15;
+const WIDE_BASE = 0x4E00; // 0x4E00 + 32767 = 0xCDFF, safely below 0xD800
+function bytesToPointer(bytes){
+  const totalBits = bytes.length*8;
+  const count = Math.ceil(totalBits/WIDE_BITS);
+  let outStr = '';
+  const chunk = [];
+  let bitPos = 0;
+  for(let i=0;i<count;i++){
+    let v = 0;
+    for(let b=0;b<WIDE_BITS;b++){
+      const byteIndex = bitPos>>3;
+      const bit = byteIndex < bytes.length ? (bytes[byteIndex] >> (7-(bitPos & 7))) & 1 : 0;
+      v = (v<<1)|bit;
+      bitPos++;
+    }
+    chunk.push(WIDE_BASE+v);
+    if(chunk.length === 4096){ outStr += String.fromCharCode.apply(null, chunk); chunk.length = 0; }
+  }
+  if(chunk.length) outStr += String.fromCharCode.apply(null, chunk);
+  return outStr;
+}
+function pointerToBytes(str){
+  const trimmed = (str||'').trim();
+  if(!trimmed) return null;
+  const vals = new Uint16Array(trimmed.length);
+  for(let i=0;i<trimmed.length;i++){
+    const code = trimmed.charCodeAt(i) - WIDE_BASE;
+    if(code < 0 || code >= (1<<WIDE_BITS)) return null; // not a character this tool produced
+    vals[i] = code;
+  }
+  return packBits(vals, WIDE_BITS);
+}
+function randomPointerBytes(n){
+  const b = new Uint8Array(n);
+  for(let off=0; off<n; off+=65536) crypto.getRandomValues(b.subarray(off, Math.min(n, off+65536)));
+  return b;
+}
+function incrementBytes(bytes){
+  const out = new Uint8Array(bytes);
+  for(let i=out.length-1;i>=0;i--){
+    if(out[i]===255){ out[i]=0; } else { out[i]++; break; }
+  }
+  return out;
+}
+function decrementBytes(bytes){
+  const out = new Uint8Array(bytes);
+  for(let i=out.length-1;i>=0;i--){
+    if(out[i]===0){ out[i]=255; } else { out[i]--; break; }
+  }
+  return out;
+}
+// ---------- shareable link ----------
+// The 15-bit alphabet is the most compact way to *write* a pointer, but URLs
+// percent-encode every non-ASCII character into 9 bytes. So links carry the very
+// same bytes as base64url in the hash fragment: shortest possible address bar,
+// identical page, and the fragment is never sent to any server.
+const B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+function bytesToB64url(bytes){
+  let out='';
+  for(let i=0;i<bytes.length;i+=3){
+    const a=bytes[i], b=bytes[i+1], c=bytes[i+2];
+    out += B64[a>>2] + B64[((a&3)<<4)|((b||0)>>4)];
+    if(b===undefined) break;
+    out += B64[((b&15)<<2)|((c||0)>>6)];
+    if(c===undefined) break;
+    out += B64[c&63];
+  }
+  return out;
+}
+function b64urlToBytes(str){
+  const clean=(str||'').trim();
+  if(!clean) return null;
+  const vals=[];
+  for(const ch of clean){
+    const v=B64.indexOf(ch);
+    if(v<0) return null;
+    vals.push(v);
+  }
+  const bytes=new Uint8Array(Math.floor(vals.length*6/8));
+  let bit=0;
+  for(const v of vals){
+    for(let b=5;b>=0;b--){
+      const idx=bit>>3;
+      if(idx<bytes.length && ((v>>b)&1)) bytes[idx] |= 1<<(7-(bit&7));
+      bit++;
+    }
+  }
+  return bytes;
+}
+function linkBase(){ return window.location.href.split('#')[0].split('?')[0]; }
+function linkLengthForBytes(bytes){ return linkBase().length + 3 + Math.ceil(bytes.length*4/3); }
+function currentLinkLimit(){
+  const el = document.getElementById('img-linklimit');
+  const v = el ? parseInt(el.value) : 1800;
+  return (!v || v<=0) ? Infinity : v;
+}
+// Writing a very long fragment into the address bar on every step is what makes
+// the page crawl, so past this size the link is still produced, just not pushed
+// into browser history.
+const URL_WRITE_MAX = 8000;
+function shareLinkFromBytes(kind, bytes){
+  const frag = (kind==='image'?'i=':'t=') + (bytes ? bytesToB64url(bytes) : '');
+  const url = linkBase() + '#' + frag;
+  if(url.length <= URL_WRITE_MAX){
+    try{ window.history.replaceState({}, '', '#'+frag); }catch(e){}
+  }
+  return url;
+}
+function shareLink(kind, pointer){
+  return shareLinkFromBytes(kind, pointerToBytes(pointer));
+}
+function shorten(str, n){
+  n = n || 180;
+  return str.length <= n ? str : str.slice(0, n) + ' … [' + fmt(str.length) + ' characters total — use the copy button]';
+}
+function updateUrl(params){
+  let url;
+  try{
+    url = new URL(window.location.href);
+    url.search='';
+    for(const k in params) url.searchParams.set(k, params[k]);
+  }catch(e){
+    const qs = Object.entries(params).map(([k,v])=>`${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&');
+    return window.location.href.split('?')[0] + '?' + qs;
+  }
+  try{
+    window.history.replaceState({}, '', url.toString());
+  }catch(e){ /* file:// or sandboxed origin — address bar can't update, that's fine */ }
+  return url.toString();
+}
+function fmt(n){ return n.toLocaleString('en-US'); }
+
+// ---------- tabs ----------
+function activateTab(kind){
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active', x.dataset.tab===kind));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  const panel = document.getElementById('panel-'+kind);
+  if(panel) panel.classList.add('active');
+}
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click', ()=>activateTab(t.dataset.tab));
+});
+
+// ---------- IMAGE: header ----------
+// 6-byte header: mode (1) + width-1 (2) + height-1 (2) + depth (1), then payload.
+// mode 0 = packed bits, 1 = deflate(packed bits), 2 = deflate(filtered, 1 byte/value),
+// mode 3 = deflate(filtered, packed bits). Whichever comes out shortest wins.
+const IMG_HEADER_BYTES = 6;
+const IMG_MAX_DIM = 4096;
+const IMG_MAX_PIXELS = 1440*2560; // 3,686,400 — full 1440×2560 supported
+function buildImageHeader(mode,w,h,depth){
+  const w1=w-1, h1=h-1;
+  return new Uint8Array([mode, (w1>>8)&0xFF, w1&0xFF, (h1>>8)&0xFF, h1&0xFF, depth]);
+}
+function parseImageHeader(bytes){
+  if(!bytes || bytes.length < IMG_HEADER_BYTES) return null;
+  const mode = bytes[0];
+  const w = ((bytes[1]<<8)|bytes[2]) + 1;
+  const h = ((bytes[3]<<8)|bytes[4]) + 1;
+  const depth = bytes[5];
+  if(mode>9||w<=0||h<=0||w>IMG_MAX_DIM||h>IMG_MAX_DIM||w*h>IMG_MAX_PIXELS||depth<1||depth>8) return null;
+  return {mode,w,h,depth,payload:bytes.slice(IMG_HEADER_BYTES)};
+}
+function currentImgSettings(){
+  let w = parseInt(document.getElementById('img-w').value)||32;
+  let h = parseInt(document.getElementById('img-h').value)||32;
+  const depth = parseInt(document.getElementById('img-depth').value);
+  w = Math.max(1, Math.min(IMG_MAX_DIM, w));
+  h = Math.max(1, Math.min(IMG_MAX_DIM, h));
+  if(w*h > IMG_MAX_PIXELS){
+    const scale = Math.sqrt(IMG_MAX_PIXELS/(w*h));
+    w = Math.max(1, Math.floor(w*scale));
+    h = Math.max(1, Math.floor(h*scale));
+  }
+  return {w,h,depth};
+}
+function imgPointerLenEstimate(){
+  const {w,h,depth} = currentImgSettings();
+  const bits = IMG_HEADER_BYTES*8 + w*h*3*depth;
+  const chars = Math.ceil(bits/WIDE_BITS);
+  document.getElementById('img-est').textContent =
+    `${w}×${h} at ${depth}-bit/channel → ${Math.pow(2,depth)} levels/channel. Worst case ${fmt(chars)} characters; real images compress far below that (typically 3–20× shorter) with no loss of quality.`;
+}
+
+// PNG-style Paeth prediction over the quantized values (fully reversible)
+function paeth(a,b,c){
+  const p=a+b-c, pa=Math.abs(p-a), pb=Math.abs(p-b), pc=Math.abs(p-c);
+  return (pa<=pb && pa<=pc) ? a : (pb<=pc ? b : c);
+}
+function filterImage(values,w,h,depth){
+  const mask=(1<<depth)-1, out=new Uint8Array(values.length), stride=w*3;
+  for(let y=0;y<h;y++){
+    for(let x=0;x<stride;x++){
+      const i=y*stride+x;
+      const a = x>=3 ? values[i-3] : 0;
+      const b = y>0 ? values[i-stride] : 0;
+      const c = (x>=3 && y>0) ? values[i-stride-3] : 0;
+      out[i] = (values[i] - paeth(a,b,c)) & mask;
+    }
+  }
+  return out;
+}
+function unfilterImage(res,w,h,depth){
+  const mask=(1<<depth)-1, out=new Uint8Array(res.length), stride=w*3;
+  for(let y=0;y<h;y++){
+    for(let x=0;x<stride;x++){
+      const i=y*stride+x;
+      const a = x>=3 ? out[i-3] : 0;
+      const b = y>0 ? out[i-stride] : 0;
+      const c = (x>=3 && y>0) ? out[i-stride-3] : 0;
+      out[i] = (res[i] + paeth(a,b,c)) & mask;
+    }
+  }
+  return out;
+}
+
+// Generic reversible predictor filters. `step` is the distance between two
+// neighbouring samples of the same channel (3 for interleaved RGB, 1 for planes).
+function filterGeneric(values,w,h,depth,type,step){
+  const mask=(1<<depth)-1, rowLen=w*step, out=new Uint8Array(values.length);
+  const rows=Math.ceil(values.length/rowLen);
+  for(let y=0;y<rows;y++){
+    for(let x=0;x<rowLen;x++){
+      const i=y*rowLen+x; if(i>=values.length) break;
+      const a = x>=step ? values[i-step] : 0;
+      const b = y>0 ? values[i-rowLen] : 0;
+      const c = (x>=step && y>0) ? values[i-rowLen-step] : 0;
+      const pred = type===1 ? a : type===2 ? b : paeth(a,b,c);
+      out[i] = (values[i]-pred) & mask;
+    }
+  }
+  return out;
+}
+function unfilterGeneric(res,w,h,depth,type,step){
+  const mask=(1<<depth)-1, rowLen=w*step, out=new Uint8Array(res.length);
+  const rows=Math.ceil(res.length/rowLen);
+  for(let y=0;y<rows;y++){
+    for(let x=0;x<rowLen;x++){
+      const i=y*rowLen+x; if(i>=res.length) break;
+      const a = x>=step ? out[i-step] : 0;
+      const b = y>0 ? out[i-rowLen] : 0;
+      const c = (x>=step && y>0) ? out[i-rowLen-step] : 0;
+      const pred = type===1 ? a : type===2 ? b : paeth(a,b,c);
+      out[i] = (res[i]+pred) & mask;
+    }
+  }
+  return out;
+}
+// channel-planar reordering (all reds, then greens, then blues) — often compresses
+// better than interleaved RGB, and is perfectly reversible.
+function toPlanar(values,n){
+  const out=new Uint8Array(values.length);
+  for(let i=0,px=0;px<n;px++,i+=3){ out[px]=values[i]; out[n+px]=values[i+1]; out[2*n+px]=values[i+2]; }
+  return out;
+}
+function fromPlanar(pl,n){
+  const out=new Uint8Array(n*3);
+  for(let px=0,i=0;px<n;px++,i+=3){ out[i]=pl[px]; out[i+1]=pl[n+px]; out[i+2]=pl[2*n+px]; }
+  return out;
+}
+// palette / indexed-colour mode: for images with 256 or fewer distinct colours
+// (flat art, logos, pixel art) this is dramatically shorter. Still exact.
+function bitsFor(n){ let b=1; while((1<<b)<n) b++; return b; }
+function buildPalette(values,n){
+  const map=new Map(), pal=[], idx=new Uint8Array(n);
+  for(let px=0,i=0;px<n;px++,i+=3){
+    const key=(values[i]<<16)|(values[i+1]<<8)|values[i+2];
+    let v=map.get(key);
+    if(v===undefined){
+      if(pal.length>=256) return null;
+      v=pal.length; map.set(key,v); pal.push([values[i],values[i+1],values[i+2]]);
+    }
+    idx[px]=v;
+  }
+  const bits=bitsFor(pal.length);
+  const head=new Uint8Array(1+pal.length*3);
+  head[0]=pal.length-1;
+  pal.forEach((c,k)=>{ head[1+k*3]=c[0]; head[2+k*3]=c[1]; head[3+k*3]=c[2]; });
+  return concatBytes(head, packBits(idx, bits));
+}
+function readPalette(block,n){
+  if(!block || block.length<1) return null;
+  const count=block[0]+1, bits=bitsFor(count);
+  const pal=block.subarray(1,1+count*3);
+  if(pal.length<count*3) return null;
+  const idx=unpackBits(block.subarray(1+count*3), bits, n);
+  const out=new Uint8Array(n*3);
+  for(let px=0,i=0;px<n;px++,i+=3){
+    const k=Math.min(idx[px],count-1)*3;
+    out[i]=pal[k]; out[i+1]=pal[k+1]; out[i+2]=pal[k+2];
+  }
+  return out;
+}
+
+// Build every candidate encoding and keep the shortest one — the payload is
+// identical in all of them, only its written form differs.
+async function bestImagePayload(values,w,h,depth){
+  const n=w*h;
+  const packed = packBits(values, depth);
+  const paethF = filterImage(values,w,h,depth);
+  const subF = filterGeneric(values,w,h,depth,1,3);
+  const upF  = filterGeneric(values,w,h,depth,2,3);
+  const planar = toPlanar(values,n);
+  const planarF = filterGeneric(planar,w,h*3,depth,3,1);
+  const paletteBlock = buildPalette(values,n);
+  const jobs = [
+    [1, packed],
+    [2, paethF],
+    [3, packBits(paethF, depth)],
+    [4, packBits(subF, depth)],
+    [5, packBits(upF, depth)],
+    [7, subF],
+    [8, upF],
+    [9, packBits(planarF, depth)],
+  ];
+  if(paletteBlock) jobs.push([6, paletteBlock]);
+  const results = await Promise.all(jobs.map(j=>deflateRaw(j[1])));
+  const candidates = [{mode:0, bytes:packed}];
+  results.forEach((r,i)=>{ if(r) candidates.push({mode:jobs[i][0], bytes:r}); });
+  candidates.sort((a,b)=>a.bytes.length-b.bytes.length);
+  return candidates[0];
+}
+async function decodeImagePayload(mode,payload,w,h,depth){
+  const count = w*h*3, n = w*h;
+  if(mode===0) return unpackBits(payload, depth, count);
+  const raw = await inflateRaw(payload);
+  if(!raw) return null;
+  if(mode===1) return unpackBits(raw, depth, count);
+  if(mode===2) return unfilterImage(raw.subarray(0,count), w, h, depth);
+  if(mode===3) return unfilterImage(unpackBits(raw, depth, count), w, h, depth);
+  if(mode===4) return unfilterGeneric(unpackBits(raw, depth, count), w, h, depth, 1, 3);
+  if(mode===5) return unfilterGeneric(unpackBits(raw, depth, count), w, h, depth, 2, 3);
+  if(mode===6) return readPalette(raw, n);
+  if(mode===7) return unfilterGeneric(raw.subarray(0,count), w, h, depth, 1, 3);
+  if(mode===8) return unfilterGeneric(raw.subarray(0,count), w, h, depth, 2, 3);
+  if(mode===9) return fromPlanar(unfilterGeneric(unpackBits(raw, depth, count), w, h*3, depth, 3, 1), n);
+  return null;
+}
+
+// ---------- clipboard ----------
+async function copyToClipboard(text){
+  try{
+    if(navigator.clipboard && window.isSecureContext){ await navigator.clipboard.writeText(text); return true; }
+  }catch(e){}
+  try{
+    const ta=document.createElement('textarea');
+    ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    const ok=document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  }catch(e){ return false; }
+}
+function copyButton(label, getText){
+  const b=document.createElement('button');
+  b.className='ghost'; b.textContent=label;
+  b.addEventListener('click', async ()=>{
+    const ok=await copyToClipboard(getText());
+    const old=label;
+    b.textContent = ok ? 'Copied ✓' : 'Copy failed — select manually';
+    setTimeout(()=>{ b.textContent=old; }, 1600);
+  });
+  return b;
+}
+
+// ---------- IMAGE: auto-detect resolution from the uploaded file ----------
+document.getElementById('img-file').addEventListener('change', function(){
+  const f = this.files && this.files[0];
+  const note = document.getElementById('img-autores');
+  if(!f){ note.textContent=''; return; }
+  const url = URL.createObjectURL(f);
+  const im = new Image();
+  im.onload = ()=>{
+    let w = im.naturalWidth || im.width, h = im.naturalHeight || im.height;
+    const nativeW = w, nativeH = h;
+    if(w>IMG_MAX_DIM || h>IMG_MAX_DIM){
+      const k = IMG_MAX_DIM/Math.max(w,h);
+      w = Math.max(1, Math.round(w*k)); h = Math.max(1, Math.round(h*k));
+    }
+    if(w*h > IMG_MAX_PIXELS){
+      const k = Math.sqrt(IMG_MAX_PIXELS/(w*h));
+      w = Math.max(1, Math.floor(w*k)); h = Math.max(1, Math.floor(h*k));
+    }
+    document.getElementById('img-w').value = w;
+    document.getElementById('img-h').value = h;
+    imgPointerLenEstimate();
+    note.textContent = (w===nativeW && h===nativeH)
+      ? `Detected native resolution ${nativeW}×${nativeH} — using it as-is (aspect ratio preserved).`
+      : `Detected native resolution ${nativeW}×${nativeH}; capped to ${w}×${h} to stay inside the addressable space (same aspect ratio).`;
+    URL.revokeObjectURL(url);
+  };
+  im.onerror = ()=>{ note.textContent='Could not read that file as an image.'; URL.revokeObjectURL(url); };
+  im.src = url;
+});
+
+// "No limit" means exactly that: full 8-bit colour and native resolution.
+const linkLimitEl = document.getElementById('img-linklimit');
+const depthEl = document.getElementById('img-depth');
+function syncQualityToLimit(){
+  const noLimit = !isFinite(currentLinkLimit());
+  if(noLimit){
+    depthEl.value = '8';
+    depthEl.disabled = true;
+  } else {
+    depthEl.disabled = false;
+  }
+  imgPointerLenEstimate();
+}
+linkLimitEl.addEventListener('change', syncQualityToLimit);
+syncQualityToLimit();
+
+document.getElementById('img-w').addEventListener('input', imgPointerLenEstimate);
+document.getElementById('img-h').addEventListener('input', imgPointerLenEstimate);
+document.getElementById('img-depth').addEventListener('change', imgPointerLenEstimate);
+imgPointerLenEstimate();
+
+// ---------- IMAGE: encode ----------
+async function encodeImageAt(imgEl, w, h, depth){
+  const levels = Math.pow(2,depth)-1;
+  const cv = document.createElement('canvas');
+  cv.width = w; cv.height = h;
+  const ctx = cv.getContext('2d', {willReadFrequently:true});
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  const targetRatio = w/h, srcRatio = imgEl.width/imgEl.height;
+  let sx=0, sy=0, sw=imgEl.width, sh=imgEl.height;
+  if(srcRatio > targetRatio){ sw = imgEl.height*targetRatio; sx = (imgEl.width-sw)/2; }
+  else { sh = imgEl.width/targetRatio; sy = (imgEl.height-sh)/2; }
+  ctx.drawImage(imgEl, sx, sy, sw, sh, 0, 0, w, h);
+  const data = ctx.getImageData(0,0,w,h).data;
+  const values = new Uint8Array(w*h*3);
+  for(let i=0,j=0;i<data.length;i+=4,j+=3){
+    values[j]   = Math.round(data[i]/255*levels);
+    values[j+1] = Math.round(data[i+1]/255*levels);
+    values[j+2] = Math.round(data[i+2]/255*levels);
+  }
+  const best = await bestImagePayload(values,w,h,depth);
+  const fullBytes = concatBytes(buildImageHeader(best.mode,w,h,depth), best.bytes);
+  return {values, w, h, depth, levels, fullBytes};
+}
+const DEPTH_LADDER = [8,6,4,3,2,1];
+function lowerDepth(d){
+  for(const v of DEPTH_LADDER) if(v < d) return v;
+  return null;
+}
+document.getElementById('img-encode-btn').addEventListener('click', ()=>{
+  const out = document.getElementById('img-encode-out');
+  const fileInput = document.getElementById('img-file');
+  if(!fileInput.files[0]){
+    out.innerHTML = '<p class="msg err">Choose an image file first.</p>';
+    return;
+  }
+  const asked = currentImgSettings();
+  const limit = currentLinkLimit();
+  out.innerHTML = '<p class="msg">Locating…</p>';
+
+  const imgURL = URL.createObjectURL(fileInput.files[0]);
+  const imgEl = new Image();
+  imgEl.onerror = ()=>{
+    out.innerHTML = '<p class="msg err">Could not read that file as an image.</p>';
+    URL.revokeObjectURL(imgURL);
+  };
+  imgEl.onload = async ()=>{
+   try{
+    let w = asked.w, h = asked.h, depth = asked.depth;
+    if(!isFinite(limit)){
+      // No limit: full quality, no downscaling, no depth reduction.
+      depth = 8;
+      const nw = imgEl.naturalWidth || imgEl.width, nh = imgEl.naturalHeight || imgEl.height;
+      let fw = nw, fh = nh;
+      if(fw>IMG_MAX_DIM || fh>IMG_MAX_DIM){
+        const k = IMG_MAX_DIM/Math.max(fw,fh);
+        fw = Math.max(1, Math.round(fw*k)); fh = Math.max(1, Math.round(fh*k));
+      }
+      if(fw*fh > IMG_MAX_PIXELS){
+        const k = Math.sqrt(IMG_MAX_PIXELS/(fw*fh));
+        fw = Math.max(1, Math.floor(fw*k)); fh = Math.max(1, Math.floor(fh*k));
+      }
+      w = fw; h = fh;
+    }
+    let res = await encodeImageAt(imgEl, w, h, depth);
+    let guard = 0;
+    // Shrink the page until its address fits the chosen link budget. Each
+    // attempt is still an exact address — just of a smaller page.
+    while(isFinite(limit) && linkLengthForBytes(res.fullBytes) > limit && guard++ < 60){
+      if(w > 12 && h > 12){
+        w = Math.max(8, Math.round(w*0.8));
+        h = Math.max(8, Math.round(h*0.8));
+      } else {
+        const d = lowerDepth(depth);
+        if(d === null) break;
+        depth = d;
+      }
+      res = await encodeImageAt(imgEl, w, h, depth);
+    }
+    const {values, levels, fullBytes} = res;
+    const pointer = bytesToPointer(fullBytes);
+    const shareUrl = shareLinkFromBytes('image', fullBytes);
+    const worst = Math.ceil((IMG_HEADER_BYTES*8 + w*h*3*depth)/WIDE_BITS);
+    document.getElementById('img-w').value = w;
+    document.getElementById('img-h').value = h;
+    document.getElementById('img-depth').value = depth;
+    imgPointerLenEstimate();
+    document.getElementById('img-pointer-in').value = pointer;
+
+    const preview = document.createElement('canvas');
+    preview.width = w; preview.height = h;
+    preview.style.width = '192px'; preview.style.height = (192*h/w)+'px';
+    const pd = new Uint8ClampedArray(w*h*4);
+    for(let j=0,px=0;j<values.length;j+=3,px+=4){
+      pd[px]=Math.round(values[j]/levels*255);
+      pd[px+1]=Math.round(values[j+1]/levels*255);
+      pd[px+2]=Math.round(values[j+2]/levels*255);
+      pd[px+3]=255;
+    }
+    preview.getContext('2d').putImageData(new ImageData(pd, w, h), 0, 0);
+
+    out.innerHTML = '';
+    if(isFinite(limit) && (w!==asked.w || h!==asked.h || depth!==asked.depth)){
+      const m = document.createElement('p');
+      m.className = 'msg ok';
+      m.textContent = `Reduced from ${asked.w}×${asked.h} at ${asked.depth}-bit to ${w}×${h} at ${depth}-bit so the link stays under ${fmt(limit)} characters.`;
+      out.appendChild(m);
+    }
+    if(isFinite(limit) && shareUrl.length > limit){
+      const m = document.createElement('p');
+      m.className = 'msg err';
+      m.textContent = `This image still needs ${fmt(shareUrl.length)} characters even at the smallest size — try a lower colour depth.`;
+      out.appendChild(m);
+    }
+    const lenLine = document.createElement('p');
+    lenLine.className = 'msg';
+    lenLine.textContent = `Link: ${fmt(shareUrl.length)} characters · pointer: ${fmt(pointer.length)} characters (${(worst/pointer.length).toFixed(1)}× shorter than raw, lossless).`;
+    out.appendChild(lenLine);
+
+    const det = document.createElement('details');
+    det.className = 'collap';
+    const sum = document.createElement('summary');
+    sum.textContent = `Address & link (click to expand)`;
+    det.appendChild(sum);
+    const detBody = document.createElement('div');
+    detBody.className = 'collap-body';
+    const p1 = document.createElement('div');
+    p1.className='pointer-out';
+    p1.innerHTML = `<span class="lbl">Pointer (self-describing: ${w}×${h}, ${depth}-bit)</span>`;
+    p1.appendChild(document.createTextNode(shorten(pointer)));
+    detBody.appendChild(p1);
+    const p2 = document.createElement('div');
+    p2.className='pointer-out';
+    p2.innerHTML = `<span class="lbl">Shareable address</span>`;
+    p2.appendChild(document.createTextNode(shorten(shareUrl, 300)));
+    detBody.appendChild(p2);
+    det.appendChild(detBody);
+    out.appendChild(det);
+    const bar = document.createElement('div');
+    bar.appendChild(copyButton('Copy link', ()=>shareUrl));
+    bar.appendChild(copyButton('Copy pointer', ()=>pointer));
+    out.appendChild(bar);
+    out.appendChild(preview);
+    const p3 = document.createElement('p');
+    p3.className='hint';
+    p3.textContent = 'This is the page as it exists at that address — quantized to the settings above, which is why it looks different from the original file. It decodes back to exactly these pixels.';
+    out.appendChild(p3);
+   }catch(err){
+    out.innerHTML = `<p class="msg err">Something went wrong locating this image: ${err.message}</p>`;
+   }finally{
+    URL.revokeObjectURL(imgURL);
+   }
+  };
+  imgEl.src = imgURL;
+});
+
+// ---------- IMAGE: decode ----------
+async function decodeImagePointer(pointer, rawOverride){
+  const out = document.getElementById('img-decode-out');
+  // rawOverride: exact bytes (e.g. from a #i= link). Re-encoding those bytes into
+  // the 15-bit pointer alphabet and back can add up to 2 zero bytes of padding,
+  // which corrupts the DEFLATE payload — so decode the original bytes directly.
+  const raw = rawOverride || pointerToBytes(pointer);
+  const header = parseImageHeader(raw);
+  if(!header){ out.innerHTML = '<p class="msg err">Could not read a valid image pointer there (missing, corrupted, or not generated by this tool).</p>'; return; }
+  const {mode,w,h,depth,payload} = header;
+  document.getElementById('img-pointer-info').textContent = `Detected: ${w}×${h}, ${depth}-bit/channel.`;
+  document.getElementById('img-w').value = w;
+  document.getElementById('img-h').value = h;
+  document.getElementById('img-depth').value = depth;
+  imgPointerLenEstimate();
+  out.innerHTML = '<p class="msg">Retrieving…</p>';
+
+  const values = await decodeImagePayload(mode,payload,w,h,depth);
+  if(!values){ out.innerHTML = '<p class="msg err">That pointer is compressed but could not be expanded — it may be truncated.</p>'; return; }
+  const levels = Math.pow(2,depth)-1;
+  const data = new Uint8ClampedArray(w*h*4);
+  for(let i=0,px=0;i<w*h*3;i+=3,px+=4){
+    data[px]   = Math.round(values[i]/levels*255);
+    data[px+1] = Math.round(values[i+1]/levels*255);
+    data[px+2] = Math.round(values[i+2]/levels*255);
+    data[px+3] = 255;
+  }
+  const cv = document.createElement('canvas');
+  cv.width=w; cv.height=h;
+  const displayW = 256;
+  cv.style.width=displayW+'px'; cv.style.height=(displayW*h/w)+'px';
+  cv.getContext('2d').putImageData(new ImageData(data,w,h),0,0);
+  out.innerHTML = '';
+  out.appendChild(cv);
+  const dl = document.createElement('button');
+  dl.className='ghost'; dl.textContent='Download PNG';
+  dl.style.display='block';
+  dl.addEventListener('click', ()=>{
+    const a=document.createElement('a');
+    a.href = cv.toDataURL('image/png');
+    a.download = 'babel-page.png';
+    a.click();
+  });
+  out.appendChild(dl);
+  const fsb = document.createElement('button');
+  fsb.className='ghost'; fsb.textContent='Fullscreen ⤢';
+  fsb.style.display='block';
+  fsb.addEventListener('click', ()=>openFullscreen(data, w, h));
+  out.appendChild(fsb);
+  if(fsOpen()) drawFullscreen(data, w, h);
+}
+
+// ---------- fullscreen viewer ----------
+function fsOpen(){ return !document.getElementById('fs-overlay').hidden; }
+function drawFullscreen(data, w, h){
+  const cv = document.getElementById('fs-canvas');
+  cv.width = w; cv.height = h;
+  cv.getContext('2d').putImageData(new ImageData(data, w, h), 0, 0);
+}
+function openFullscreen(data, w, h){
+  const ov = document.getElementById('fs-overlay');
+  ov.hidden = false;
+  document.body.style.overflow = 'hidden';
+  drawFullscreen(data, w, h);
+}
+function closeFullscreen(){
+  document.getElementById('fs-overlay').hidden = true;
+  document.body.style.overflow = '';
+}
+document.getElementById('fs-exit').addEventListener('click', closeFullscreen);
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && fsOpen()) closeFullscreen(); });
+document.getElementById('fs-prev').addEventListener('click', ()=>stepImagePointer(-1));
+document.getElementById('fs-next').addEventListener('click', ()=>stepImagePointer(1));
+document.getElementById('fs-rand').addEventListener('click', ()=>document.getElementById('img-random-btn').click());
+
+document.getElementById('img-pointer-in').addEventListener('input', ()=>{
+  if(routePasted('img-pointer-in')) return;
+  const header = parseImageHeader(pointerToBytes(document.getElementById('img-pointer-in').value));
+  document.getElementById('img-pointer-info').textContent = header
+    ? `Detected: ${header.w}×${header.h}, ${header.depth}-bit/channel. Click Retrieve to render.`
+    : '';
+});
+document.getElementById('img-decode-btn').addEventListener('click', ()=>{
+  decodeImagePointer(document.getElementById('img-pointer-in').value);
+});
+document.getElementById('img-random-btn').addEventListener('click', ()=>{
+  const {w,h,depth} = currentImgSettings();
+  const payloadBytes = Math.ceil(w*h*3*depth/8);
+  // random static doesn't compress, so it stays in the uncompressed mode
+  const fullBytes = concatBytes(buildImageHeader(0,w,h,depth), randomPointerBytes(payloadBytes));
+  const pointer = bytesToPointer(fullBytes);
+  document.getElementById('img-pointer-in').value = pointer;
+  shareLink('image', pointer);
+  decodeImagePointer(pointer);
+});
+async function stepImagePointer(direction){
+  const field = document.getElementById('img-pointer-in');
+  const header = parseImageHeader(pointerToBytes(field.value));
+  let w,h,depth,values;
+  if(header){
+    ({w,h,depth} = header);
+    values = await decodeImagePayload(header.mode, header.payload, w, h, depth);
+  } else {
+    ({w,h,depth} = currentImgSettings());
+  }
+  if(!values) values = new Uint8Array(w*h*3);
+  // step the page itself by ±1, then re-shorten the address around it
+  const packed = packBits(values, depth);
+  const stepped = direction>0 ? incrementBytes(packed) : decrementBytes(packed);
+  const neighbour = unpackBits(stepped, depth, w*h*3);
+  const best = await bestImagePayload(neighbour,w,h,depth);
+  const pointer = bytesToPointer(concatBytes(buildImageHeader(best.mode,w,h,depth), best.bytes));
+  field.value = pointer;
+  shareLink('image', pointer);
+  decodeImagePointer(pointer);
+}
+(function(){
+  const b=document.getElementById('img-copy-btn');
+  b.addEventListener('click', async ()=>{
+    const pointer=document.getElementById('img-pointer-in').value.trim();
+    const url = pointer ? shareLink('image', pointer) : window.location.href;
+    const ok=await copyToClipboard(url);
+    b.textContent = ok ? 'Copied ✓' : 'Copy failed';
+    setTimeout(()=>{ b.textContent='Copy link'; }, 1600);
+  });
+})();
+document.getElementById('img-prev-btn').addEventListener('click', ()=>stepImagePointer(-1));
+document.getElementById('img-next-btn').addEventListener('click', ()=>stepImagePointer(1));
+
+// ---------- TEXT: alphabet (64 symbols → exactly 6 bits) ----------
+const ALPHABET = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 .';
+const CHAR_TO_IDX = {};
+ALPHABET.split('').forEach((c,i)=>CHAR_TO_IDX[c]=i);
+// 3-byte header: mode (1) + page length (2). mode 0 = packed 6-bit,
+// 1 = deflate(packed 6-bit), 2 = deflate(one byte per symbol).
+const TXT_HEADER_BYTES = 3;
+const TXT_MAX_LEN = 20000;
+function buildTextHeader(mode,len){ return new Uint8Array([mode, (len>>8)&0xFF, len&0xFF]); }
+function parseTextHeader(bytes){
+  if(!bytes || bytes.length < TXT_HEADER_BYTES) return null;
+  const mode = bytes[0];
+  const len = (bytes[1]<<8)|bytes[2];
+  if(mode>3 || len<=0 || len>TXT_MAX_LEN) return null;
+  return {mode, len, payload:bytes.slice(TXT_HEADER_BYTES)};
+}
+async function bestTextPayload(values){
+  const packed = packBits(values, 6);
+  const bytes = Uint8Array.from(values);
+  const delta = new Uint8Array(bytes.length);
+  for(let i=0;i<bytes.length;i++) delta[i] = (bytes[i] - (i?bytes[i-1]:0)) & 63;
+  const candidates = [{mode:0, bytes:packed}];
+  const [c1,c2,c3] = await Promise.all([deflateRaw(packed), deflateRaw(bytes), deflateRaw(delta)]);
+  if(c1) candidates.push({mode:1, bytes:c1});
+  if(c2) candidates.push({mode:2, bytes:c2});
+  if(c3) candidates.push({mode:3, bytes:c3});
+  candidates.sort((a,b)=>a.bytes.length-b.bytes.length);
+  return candidates[0];
+}
+async function decodeTextPayload(mode,payload,len){
+  if(mode===0) return unpackBits(payload, 6, len);
+  const raw = await inflateRaw(payload);
+  if(!raw) return null;
+  if(mode===1) return unpackBits(raw, 6, len);
+  if(mode===2){ const out=new Uint8Array(len); out.set(raw.subarray(0,len)); return out; }
+  const out=new Uint8Array(len);
+  let prev=0;
+  for(let i=0;i<len;i++){ prev = (( (raw[i]||0) + prev) & 63); out[i]=prev; }
+  return out;
+}
+
+function txtPointerLenEstimate(){
+  const len = parseInt(document.getElementById('txt-len').value);
+  const bits = TXT_HEADER_BYTES*8 + len*6;
+  const chars = Math.ceil(bits/WIDE_BITS);
+  document.getElementById('txt-est').textContent = `${len}-character page over a 64-symbol alphabet → worst case ${chars} characters; real text compresses well below that, losslessly.`;
+}
+document.getElementById('txt-len').addEventListener('change', txtPointerLenEstimate);
+txtPointerLenEstimate();
+
+document.getElementById('txt-encode-btn').addEventListener('click', async ()=>{
+  const out = document.getElementById('txt-encode-out');
+ try{
+  const len = parseInt(document.getElementById('txt-len').value);
+  let raw = document.getElementById('txt-input').value;
+  let clean = raw.split('').filter(c=>c in CHAR_TO_IDX).join('');
+  if(clean.length > len) clean = clean.slice(0,len);
+  const dropped = raw.length - clean.length;
+  const padded = clean.padEnd(len, ' ');
+  const values = padded.split('').map(c=>CHAR_TO_IDX[c]);
+  const best = await bestTextPayload(values);
+  const fullBytes = concatBytes(buildTextHeader(best.mode,len), best.bytes);
+  const pointer = bytesToPointer(fullBytes);
+  const shareUrl = shareLink('text', pointer);
+  document.getElementById('txt-pointer-in').value = pointer;
+  const worst = Math.ceil((TXT_HEADER_BYTES*8 + len*6)/WIDE_BITS);
+
+  out.innerHTML='';
+  if(dropped>0){
+    const w = document.createElement('p');
+    w.className='msg err';
+    w.textContent = `${dropped} character(s) outside the alphabet or beyond the page length were dropped.`;
+    out.appendChild(w);
+  }
+  const lenLine=document.createElement('p');
+  lenLine.className='msg';
+  lenLine.textContent=`Link: ${fmt(shareUrl.length)} characters · pointer: ${fmt(pointer.length)} characters (${(worst/pointer.length).toFixed(1)}× shorter than raw).`;
+  out.appendChild(lenLine);
+  const det=document.createElement('details');
+  det.className='collap';
+  const sum=document.createElement('summary');
+  sum.textContent=`Address & link (click to expand)`;
+  det.appendChild(sum);
+  const detBody=document.createElement('div');
+  detBody.className='collap-body';
+  const p1=document.createElement('div');
+  p1.className='pointer-out';
+  p1.innerHTML=`<span class="lbl">Pointer (self-describing: len=${len})</span>`;
+  p1.appendChild(document.createTextNode(shorten(pointer)));
+  detBody.appendChild(p1);
+  const p2=document.createElement('div');
+  p2.className='pointer-out';
+  p2.innerHTML=`<span class="lbl">Shareable address</span>`;
+  p2.appendChild(document.createTextNode(shorten(shareUrl, 300)));
+  detBody.appendChild(p2);
+  det.appendChild(detBody);
+  out.appendChild(det);
+  const bar=document.createElement('div');
+  bar.appendChild(copyButton('Copy link', ()=>shareUrl));
+  bar.appendChild(copyButton('Copy pointer', ()=>pointer));
+  out.appendChild(bar);
+  const p3=document.createElement('div');
+  p3.className='result-text';
+  p3.textContent = padded;
+  out.appendChild(p3);
+ }catch(err){
+  out.innerHTML = `<p class="msg err">Something went wrong locating this text: ${err.message}</p>`;
+ }
+});
+
+async function decodeTextPointer(pointer, rawOverride){
+  const out = document.getElementById('txt-decode-out');
+  const raw = rawOverride || pointerToBytes(pointer);
+  const header = parseTextHeader(raw);
+  if(!header){ out.innerHTML = '<p class="msg err">Could not read a valid text pointer there (missing, corrupted, or not generated by this tool).</p>'; return; }
+  const {mode,len,payload} = header;
+  document.getElementById('txt-pointer-info').textContent = `Detected: ${len}-character page.`;
+  document.getElementById('txt-len').value = [140,280,500,1000,3200].includes(len) ? len : document.getElementById('txt-len').value;
+  const values = await decodeTextPayload(mode,payload,len);
+  if(!values){ out.innerHTML = '<p class="msg err">That pointer is compressed but could not be expanded — it may be truncated.</p>'; return; }
+  let text='';
+  for(let i=0;i<len;i++) text += ALPHABET[values[i]] ?? ' ';
+  out.innerHTML='';
+  const p = document.createElement('div');
+  p.className='result-text';
+  p.textContent = text;
+  out.appendChild(p);
+}
+document.getElementById('txt-pointer-in').addEventListener('input', ()=>{
+  if(routePasted('txt-pointer-in')) return;
+  const header = parseTextHeader(pointerToBytes(document.getElementById('txt-pointer-in').value));
+  document.getElementById('txt-pointer-info').textContent = header
+    ? `Detected: ${header.len}-character page. Click Retrieve to render.`
+    : '';
+});
+document.getElementById('txt-decode-btn').addEventListener('click', ()=>{
+  decodeTextPointer(document.getElementById('txt-pointer-in').value);
+});
+document.getElementById('txt-random-btn').addEventListener('click', ()=>{
+  const len = parseInt(document.getElementById('txt-len').value);
+  const payloadBytes = Math.ceil(len*6/8);
+  const fullBytes = concatBytes(buildTextHeader(0,len), randomPointerBytes(payloadBytes));
+  const pointer = bytesToPointer(fullBytes);
+  document.getElementById('txt-pointer-in').value = pointer;
+  shareLink('text', pointer);
+  decodeTextPointer(pointer);
+});
+async function stepTextPointer(direction){
+  const field = document.getElementById('txt-pointer-in');
+  const header = parseTextHeader(pointerToBytes(field.value));
+  let len, values;
+  if(header){
+    len = header.len;
+    values = await decodeTextPayload(header.mode, header.payload, len);
+  } else {
+    len = parseInt(document.getElementById('txt-len').value);
+  }
+  if(!values) values = new Uint8Array(len);
+  const packed = packBits(values, 6);
+  const stepped = direction>0 ? incrementBytes(packed) : decrementBytes(packed);
+  const neighbour = unpackBits(stepped, 6, len);
+  const best = await bestTextPayload(Array.from(neighbour));
+  const pointer = bytesToPointer(concatBytes(buildTextHeader(best.mode,len), best.bytes));
+  field.value = pointer;
+  shareLink('text', pointer);
+  decodeTextPointer(pointer);
+}
+(function(){
+  const b=document.getElementById('txt-copy-btn');
+  b.addEventListener('click', async ()=>{
+    const pointer=document.getElementById('txt-pointer-in').value.trim();
+    const url = pointer ? shareLink('text', pointer) : window.location.href;
+    const ok=await copyToClipboard(url);
+    b.textContent = ok ? 'Copied ✓' : 'Copy failed';
+    setTimeout(()=>{ b.textContent='Copy link'; }, 1600);
+  });
+})();
+document.getElementById('txt-prev-btn').addEventListener('click', ()=>stepTextPointer(-1));
+document.getElementById('txt-next-btn').addEventListener('click', ()=>stepTextPointer(1));
+
+// ---------- routing: open the right shelf for whatever address arrives ----------
+function openAddress(kind, pointer, rawBytes){
+  activateTab(kind);
+  document.getElementById(kind==='image'?'img-pointer-in':'txt-pointer-in').value = pointer;
+  (kind==='image'?decodeImagePointer:decodeTextPointer)(pointer, rawBytes);
+}
+// Reads "#i=…", "#t=…", a whole shared link, or a bare pointer, and returns
+// which shelf it belongs to.
+function classifyAddress(text){
+  const str = (text||'').trim();
+  if(!str) return null;
+  const m = str.match(/[#&](i|t)=([A-Za-z0-9\-_]+)/);
+  if(m){
+    const bytes = b64urlToBytes(m[2]);
+    if(bytes) return {kind: m[1]==='i'?'image':'text', pointer: bytesToPointer(bytes), bytes};
+  }
+  const bytes = pointerToBytes(str);
+  if(bytes){
+    if(parseImageHeader(bytes)) return {kind:'image', pointer:str, bytes:null};
+    if(parseTextHeader(bytes)) return {kind:'text', pointer:str, bytes:null};
+  }
+  return null;
+}
+// If something pasted into one shelf's pointer box belongs to the other shelf
+// (or is a full link), jump there automatically instead of erroring.
+function routePasted(fieldId){
+  const field = document.getElementById(fieldId);
+  const value = field.value.trim();
+  if(!value) return false;
+  const hit = classifyAddress(value);
+  if(!hit) return false;
+  const thisKind = fieldId==='img-pointer-in' ? 'image' : 'text';
+  const isLink = /[#&](i|t)=/.test(value);
+  if(hit.kind === thisKind && !isLink) return false;
+  if(hit.kind !== thisKind) field.value = '';
+  openAddress(hit.kind, hit.pointer, hit.bytes);
+  return true;
+}
+function loadFromLocation(){
+  const hash = (window.location.hash||'').replace(/^#/,'');
+  const m = hash.match(/^(i|t)=(.*)$/);
+  if(m){
+    const bytes = b64urlToBytes(m[2]);
+    if(bytes){ openAddress(m[1]==='i'?'image':'text', bytesToPointer(bytes), bytes); return true; }
+  }
+  const params = new URLSearchParams(window.location.search);
+  const type = params.get('type');
+  const pointer = params.get('pointer');
+  if(type === 'image' && pointer){ openAddress('image', pointer); return true; }
+  if(type === 'text' && pointer){ openAddress('text', pointer); return true; }
+  return false;
+}
+loadFromLocation();
+window.addEventListener('hashchange', loadFromLocation);
+</script>
+</body>
+</html>
